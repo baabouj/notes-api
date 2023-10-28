@@ -16,6 +16,7 @@
     "format:check": "prettier --check --plugin-search-dir=. \"**/*.{js,ts,json}\"",
     "lint": "eslint \"**/*.{js,ts}\"",
     "lint:fix": "eslint \"**/*.{js,ts}\" --fix",
+    "check": "pnpm format:check && pnpm lint",
     "prepare": "husky install"
   },
   "author": "",
