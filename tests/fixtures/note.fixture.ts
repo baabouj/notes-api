@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import cuid from 'cuid';
 
-import { prisma } from '../../src/lib';
+import { prisma } from '$/lib';
 
 export type Note = {
   id: string;
