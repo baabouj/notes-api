@@ -2,7 +2,7 @@ import type { Request } from 'express';
 import { Strategy as JwtStrategy } from 'passport-jwt';
 
 import { userService } from '$/services';
-import { decrypt, exclu } from '$/utils';
+import { decrypt } from '$/utils';
 
 import { config } from './config';
 
@@ -24,7 +24,7 @@ const jwtVerify = async (payload: any, done: any) => {
   if (!user) {
     return done(null, false);
   }
-  return done(null, exclu(user, ['password']));
+  return done(null, user.id);
 };
 
 const jwtStrategy = new JwtStrategy(jwtOptions, jwtVerify);
