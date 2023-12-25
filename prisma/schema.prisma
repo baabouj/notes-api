@@ -41,6 +41,7 @@ model Note {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  @@unique([id, authorId])
   @@map("notes")
 }
 
@@ -56,6 +57,8 @@ model Category {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  @@unique([id, authorId])
+  @@unique([name, authorId])
   @@map("categories")
 }
 
@@ -71,6 +74,8 @@ model Tag {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  @@unique([name, authorId])
+  @@unique([id, authorId])
   @@map("tags")
 }
 

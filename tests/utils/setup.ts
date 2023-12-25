@@ -14,8 +14,13 @@ const setup = () => {
 
   afterAll(async () => {
     server.close();
-    await prisma.token.deleteMany();
-    await prisma.user.deleteMany();
+    await prisma.$transaction([
+      prisma.note.deleteMany(),
+      prisma.user.deleteMany(),
+      prisma.token.deleteMany(),
+      prisma.category.deleteMany(),
+      prisma.tag.deleteMany(),
+    ]);
     await prisma.$disconnect();
   });
 };

@@ -1,11 +1,10 @@
-import type { User } from '@prisma/client';
 import httpStatus from 'http-status';
 import ms from 'ms';
 
 import { config } from '$/config';
 import { BadRequestException } from '$/exceptions';
 import { handleAsync } from '$/lib';
-import { authService, tokenService } from '$/services';
+import { authService, tokenService, userService } from '$/services';
 import {
   changePasswordSchema,
   forgotPasswordSchema,
@@ -136,12 +135,11 @@ const verifyEmail = handleAsync(
 );
 
 const changePassword = handleAsync(
-  async (req, res) => {
-    const userId = (req.user as User).id;
+  async ({ body, user: userId }, res) => {
     await authService.changePassword(
-      userId,
-      req.body.oldPassword,
-      req.body.newPassword,
+      userId as string,
+      body.oldPassword,
+      body.newPassword,
     );
 
     res.status(httpStatus.NO_CONTENT).send();
@@ -178,8 +176,8 @@ const resetPassword = handleAsync(
 );
 
 const sendVerificationEmail = handleAsync(
-  async (req, res) => {
-    await authService.sendVerificationEmail((req.user as User).id);
+  async ({ user: userId }, res) => {
+    await authService.sendVerificationEmail(userId as string);
 
     res.send({
       message:
@@ -192,8 +190,9 @@ const sendVerificationEmail = handleAsync(
 );
 
 const findAuthedUser = handleAsync(
-  async (req, res) => {
-    res.send(req.user);
+  async ({ user: userId }, res) => {
+    const user = await userService.find(userId as string);
+    res.send(user);
   },
   {
     auth: true,

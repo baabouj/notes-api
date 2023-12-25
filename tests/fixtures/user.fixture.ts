@@ -13,8 +13,8 @@ export type User = {
 
 const generateUser = (): User => {
   return {
-    id: faker.datatype.uuid(),
-    name: faker.name.fullName(),
+    id: faker.string.uuid(),
+    name: faker.person.fullName(),
     email: faker.internet.email().toLowerCase(),
     emailVerifiedAt: null,
     password: faker.internet.password(),

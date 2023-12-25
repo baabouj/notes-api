@@ -10,7 +10,7 @@ import {
 import { isAuthenticated } from './is-authenticated';
 import { parseSchema } from './parse-schema';
 
-const handleAsync = <TBody, TQuery, TParams>(
+const handleAsync = <TBody = unknown, TQuery = unknown, TParams = unknown>(
   fn: RequestHandler<TParams, any, TBody, TQuery>,
   settings?: {
     schema?: {
@@ -30,11 +30,13 @@ const handleAsync = <TBody, TQuery, TParams>(
     if (settings?.schema) {
       let errors: ValidationError[] = [];
       for (const [key, keySchema] of Object.entries(settings.schema)) {
+        // eslint-disable-next-line security/detect-object-injection
         const result = parseSchema((req as any)[key], keySchema);
 
         if (!result.success) {
           errors = [...errors, ...result.errors];
         } else {
+          // eslint-disable-next-line security/detect-object-injection
           (req as any)[key] = result.data;
         }
       }
@@ -42,7 +44,6 @@ const handleAsync = <TBody, TQuery, TParams>(
         return next(new ValidationException(errors));
       }
     }
-
     return Promise.resolve(fn(req as any, res, next)).catch((err) => next(err));
   };
 };
