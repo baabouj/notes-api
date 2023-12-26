@@ -1,0 +1,105 @@
+import httpStatus from 'http-status';
+
+import { handleAsync } from '$/lib';
+import { categoryService, noteService } from '$/services';
+import {
+  createCategorySchema,
+  destroyCategorySchema,
+  getCategoriesSchema,
+  getCategoryNotesSchema,
+  getCategorySchema,
+  updateCategorySchema,
+} from '$/validations';
+
+const findAll = handleAsync(
+  async (req, res) => {
+    const allCategories = await categoryService.paginate(
+      req.user as string,
+      req.query as any,
+    );
+    res.send(allCategories);
+  },
+  {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    schema: getCategoriesSchema,
+    auth: true,
+  },
+);
+
+const findOne = handleAsync(
+  async ({ params: { categoryId }, user: userId }, res) => {
+    const category = await categoryService.findOne(
+      categoryId,
+      userId as string,
+    );
+    res.send(category);
+  },
+  {
+    schema: getCategorySchema,
+    auth: true,
+  },
+);
+
+const create = handleAsync(
+  async ({ body, user: userId }, res) => {
+    const createdCategory = await categoryService.create(
+      body,
+      userId as string,
+    );
+    res.status(httpStatus.CREATED).send(createdCategory);
+  },
+  {
+    schema: createCategorySchema,
+    auth: true,
+  },
+);
+
+const update = handleAsync(
+  async ({ body, params: { categoryId }, user: userId }, res) => {
+    const updatedCategory = await categoryService.update(
+      categoryId,
+      userId as string,
+      body,
+    );
+    res.send(updatedCategory);
+  },
+  {
+    schema: updateCategorySchema,
+    auth: true,
+  },
+);
+
+const destroy = handleAsync(
+  async ({ params: { categoryId }, user: userId }, res) => {
+    await categoryService.destroy(categoryId, userId as string);
+    res.status(httpStatus.NO_CONTENT).send();
+  },
+  {
+    schema: destroyCategorySchema,
+    auth: true,
+  },
+);
+
+const findCategoryNotes = handleAsync(
+  async ({ params: { categoryId }, user: userId, query }, res) => {
+    await categoryService.findOne(categoryId, userId as string);
+
+    const { include }: any = query;
+
+    const categoryNotes = await noteService.paginate(
+      userId as string,
+      { ...query, include: { ...include, category: false } } as any,
+      { categoryId },
+    );
+    res.send(categoryNotes);
+  },
+  {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    schema: getCategoryNotesSchema,
+    auth: true,
+  },
+);
+
+export { create, destroy, findAll, findCategoryNotes, findOne, update };
