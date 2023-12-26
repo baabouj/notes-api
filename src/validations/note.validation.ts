@@ -1,21 +1,6 @@
 import { z } from 'zod';
 
-const pagination = z.object({
-  page: z
-    .string()
-    .transform((p) => {
-      const page = parseInt(p, 10);
-      return !Number.isNaN(page) && page > 0 ? page : 1;
-    })
-    .default('1'),
-  limit: z
-    .string()
-    .transform((l) => {
-      const limit = parseInt(l, 10);
-      return !Number.isNaN(limit) && limit > 0 && limit <= 100 ? limit : 20;
-    })
-    .default('20'),
-});
+import { paginationSchema } from './pagination.validation';
 
 const noteInclude = z
   .string()
@@ -39,8 +24,7 @@ const noteParamsSchema = z.object({
 });
 
 const getNotesSchema = {
-  query: pagination.extend({
-    search: z.string().optional(),
+  query: paginationSchema.extend({
     ...noteIncludeSchema.shape,
   }),
 };
