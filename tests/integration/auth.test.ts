@@ -241,7 +241,10 @@ describe('Auth routes', () => {
         .get('/v1/auth/me')
         .withHeaders('Authorization', `Bearer ${accessToken}`)
         .expectStatus(httpStatus.OK)
-        .expectJsonLike(only(user, ['id', 'name', 'email']));
+        .expectJsonLike(only(user, ['id', 'name', 'email']))
+        .expect((ctx) => {
+          expect(ctx.res.body).to.not.haveOwnProperty('password');
+        });
     });
 
     test('should return 401 error if not authenticated', async () => {
