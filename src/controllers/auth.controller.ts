@@ -5,6 +5,7 @@ import { config } from '$/config';
 import { BadRequestException } from '$/exceptions';
 import { handleAsync } from '$/lib';
 import { authService, tokenService, userService } from '$/services';
+import { exclu } from '$/utils';
 import {
   changePasswordSchema,
   forgotPasswordSchema,
@@ -192,7 +193,7 @@ const sendVerificationEmail = handleAsync(
 const findAuthedUser = handleAsync(
   async ({ user: userId }, res) => {
     const user = await userService.find(userId as string);
-    res.send(user);
+    res.send(exclu(user!, ['password']));
   },
   {
     auth: true,
