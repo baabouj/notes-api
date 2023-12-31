@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-import { BadRequestException } from '$/exceptions';
+import { BadRequestException, UnauthorizedException } from '$/exceptions';
 import { emailService, tokenService, userService } from '$/services';
 import { hash } from '$/utils';
 import type { SignupBody } from '$/validations';
@@ -9,7 +9,7 @@ const login = async (email: string, password: string) => {
   const user = await userService.findByEmail(email);
 
   if (!user) {
-    throw new BadRequestException('Invalid email or password', {
+    throw new UnauthorizedException('Invalid email or password', {
       event: 'authn_login_fail',
       description: 'failed login attempt',
     });
@@ -18,7 +18,7 @@ const login = async (email: string, password: string) => {
   const isMatched = await hash.verify(user.password, password);
 
   if (!isMatched) {
-    throw new BadRequestException('Invalid email or password', {
+    throw new UnauthorizedException('Invalid email or password', {
       event: `authn_login_fail:${user.id}`,
       description: `User ${user.id} login failed`,
     });
