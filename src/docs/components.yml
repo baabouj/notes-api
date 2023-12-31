@@ -1,0 +1,88 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        emailVerifiedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      example:
+        id: clqqfhkxz0000qtpeh2ujs4er
+        email: fake@example.com
+        name: fake name
+        emailVerifiedAt: 2023-12-29T09:30:21.864Z
+        createdAt: 2023-12-29T09:25:21.864Z
+        updatedAt: 2023-12-29T09:25:21.864Z
+
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: number
+        message:
+          type: string
+
+  responses:
+    AccessToken:
+      description: Ok
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              access_token:
+                type: string
+            example:
+              access_token: FIjewtb-NsJEvI8OencV5Xu4n614-3ZxX1jWMSMQ1Za5cvEZRd7dKqWqQbU0CyWDDgjEIAC2FQgLiRx7YarR1HEoBPmiFosJcJIQzkEQM0t5iDaE5h6slS2l-BJrQP3-X-wF-TytvPSPo_zBI87H_6wqDL8sYOsjgPoKqpwTjDvhfJHnTunkUw4olm3aNVBvFhm_J-6rwnbmiN5UCBRYgpRVFuk-j4RoACvCcmwxixs
+    ValidationFailed:
+      description: Input validation failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: number
+                example: 400
+              message:
+                type: string
+                example: Validation failed
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: password
+                    error:
+                      type: string
+                      example: String must contain at least 8 character(s)
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            statusCode: 401
+            message: Unauthorized
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
