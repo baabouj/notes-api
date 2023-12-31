@@ -131,7 +131,7 @@ describe('Auth routes', () => {
         .stores('refresh_token', '#refresh token');
     });
 
-    test('should return 400 error if there are no user with that email', async () => {
+    test('should return 401 error if there are no user with that email', async () => {
       const user = generateUser();
       const loginCredentials = {
         email: user.email,
@@ -142,11 +142,11 @@ describe('Auth routes', () => {
         .spec()
         .post('/v1/auth/login')
         .withBody(loginCredentials)
-        .expectStatus(httpStatus.BAD_REQUEST)
+        .expectStatus(httpStatus.UNAUTHORIZED)
         .expectBodyContains('Invalid email or password');
     });
 
-    test('should return 400 error if password is wrong', async () => {
+    test('should return 401 error if password is wrong', async () => {
       const user = generateUser();
       await insertUsers([user]);
       const loginCredentials = {
@@ -158,7 +158,7 @@ describe('Auth routes', () => {
         .spec()
         .post('/v1/auth/login')
         .withBody(loginCredentials)
-        .expectStatus(httpStatus.BAD_REQUEST)
+        .expectStatus(httpStatus.UNAUTHORIZED)
         .expectBodyContains('Invalid email or password');
     });
   });
