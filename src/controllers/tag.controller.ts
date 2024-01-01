@@ -13,11 +13,8 @@ import {
 
 const findAll = handleAsync(
   async ({ query, user: userId }, res) => {
-    const categories = await tagService.paginate(
-      userId as string,
-      query as any,
-    );
-    res.send(categories);
+    const tags = await tagService.paginate(userId as string, query as any);
+    res.send(tags);
   },
   {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -40,8 +37,8 @@ const findOne = handleAsync(
 
 const create = handleAsync(
   async ({ body, user: userId }, res) => {
-    const createdtag = await tagService.create(body, userId as string);
-    res.status(httpStatus.CREATED).send(createdtag);
+    const createdTag = await tagService.create(body, userId as string);
+    res.status(httpStatus.CREATED).send(createdTag);
   },
   {
     schema: createTagSchema,
@@ -75,17 +72,13 @@ const findNotes = handleAsync(
   async ({ params: { tagId }, user: userId, query }, res) => {
     await tagService.findOne(tagId, userId as string);
 
-    const tagNotes = await noteService.paginate(
-      userId as string,
-      query as any,
-      {
-        tags: {
-          some: {
-            id: tagId,
-          },
+    const tagNotes = await noteService.paginate(userId as string, query, {
+      tags: {
+        some: {
+          id: tagId,
         },
       },
-    );
+    });
     res.send(tagNotes);
   },
   {
