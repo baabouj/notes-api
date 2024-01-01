@@ -27,6 +27,82 @@ components:
         createdAt: 2023-12-29T09:25:21.864Z
         updatedAt: 2023-12-29T09:25:21.864Z
 
+    Note:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        authorId:
+          type: string
+        categoryId:
+          type: string
+        category:
+          $ref: '#/components/schemas/Category'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      example:
+        id: clqqfhkxz0000qtpeh2ujs4er
+        title: note title
+        content: note description
+        authorId: clqtd1znt0000qtvw80rjy9h1
+        categoryId: clqtd2uli000eqtvwopcrwuz0
+        createdAt: 2023-12-29T09:25:21.864Z
+        updatedAt: 2023-12-29T09:25:21.864Z
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clqqfhkxz0000qtpeh2ujs4er
+        name:
+          type: string
+          example: work
+        authorId:
+          type: string
+          example: clqtd1znt0000qtvw80rjy9h1
+        createdAt:
+          type: string
+          format: date-time
+          example: 2023-12-29T09:25:21.864Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2023-12-29T09:25:21.864Z
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clqqfhkxz0000qtpeh2ujs4er
+        name:
+          type: string
+          example: javascript
+        authorId:
+          type: string
+          example: clqtd1znt0000qtvw80rjy9h1
+        createdAt:
+          type: string
+          format: date-time
+          example: 2023-12-29T09:25:21.864Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2023-12-29T09:25:21.864Z
+
     Error:
       type: object
       properties:
@@ -34,6 +110,66 @@ components:
           type: number
         message:
           type: string
+
+  requestBody:
+    Note:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - title
+              - content
+            properties:
+              title:
+                type: string
+              content:
+                type: string
+              categoryId:
+                type: string
+              tags:
+                type: array
+                items:
+                  type: string
+            example:
+              title: note title
+              content: note content
+              categoryId: clqtd2uli000gqtvwk8b3vb5o
+              tags:
+                - travel
+
+  parameters:
+    NotesPagination:
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+        default: 10
+        description: Maximum number of notes
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+        description: Page number
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: search for notes
+      - in: query
+        name: include
+        schema:
+          type: string
+          enum:
+            - category
+            - tags
+            - tags,category
+            - category,tags
+        description: include notes tags or categories or both
 
   responses:
     AccessToken:
@@ -80,6 +216,47 @@ components:
           example:
             statusCode: 401
             message: Unauthorized
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            statusCode: 404
+            message: Not Found
+    PaginatedNotes:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              info:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    example: 100
+                  current_page:
+                    type: integer
+                    example: 2
+                  next_page:
+                    type: integer
+                    example: 3
+                  prev_page:
+                    type: integer
+                    example: 1
+                  last_page:
+                    type: integer
+                    example: 4
+                  per_page:
+                    type: integer
+                    example: 20
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Note'
 
   securitySchemes:
     bearerAuth:
