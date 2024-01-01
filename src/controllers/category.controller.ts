@@ -12,10 +12,10 @@ import {
 } from '$/validations';
 
 const findAll = handleAsync(
-  async (req, res) => {
+  async ({ query, user: userId }, res) => {
     const allCategories = await categoryService.paginate(
-      req.user as string,
-      req.query as any,
+      userId as string,
+      query,
     );
     res.send(allCategories);
   },
@@ -85,11 +85,11 @@ const findCategoryNotes = handleAsync(
   async ({ params: { categoryId }, user: userId, query }, res) => {
     await categoryService.findOne(categoryId, userId as string);
 
-    const { include }: any = query;
+    const { include } = query;
 
     const categoryNotes = await noteService.paginate(
       userId as string,
-      { ...query, include: { ...include, category: false } } as any,
+      { ...query, include: { ...include, category: false } },
       { categoryId },
     );
     res.send(categoryNotes);
