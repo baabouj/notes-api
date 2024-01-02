@@ -36,3 +36,14 @@ jobs:
 
       - name: Test
         run: pnpm test
+        env:
+          DATABASE_URL: file:./test.db
+          JWT_SECRET: thisisaccesstokensecret
+          EMAIL_VERIFICATION_FRONTEND_URL: http://example.com/auth/verify-email
+          RESET_PASSWORD_FRONTEND_URL: http://example.com/auth/reset-password
+          ENCRYPTION_KEY: thisisencryptionkey
+          SMTP_HOST: smtp.ethereal.email
+          SMTP_PORT: 587
+          SMTP_USERNAME: test@ethereal.email
+          SMTP_PASSWORD: password123
+          EMAIL_FROM: support@app.com
