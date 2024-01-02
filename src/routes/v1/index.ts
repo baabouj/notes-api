@@ -1,5 +1,8 @@
 import { Router } from 'express';
 
+import { config } from '$/config';
+import { rateLimit } from '$/middlewares';
+
 import { authRouter } from './auth.route';
 import { categoriesRouter } from './categories.route';
 import { docsRouter } from './docs.route';
@@ -7,6 +10,10 @@ import { notesRouter } from './notes.route';
 import { tagsRouter } from './tags.route';
 
 const v1Router = Router();
+
+if (config.env === 'production') {
+  authRouter.use(rateLimit);
+}
 
 v1Router.use('/auth', authRouter);
 v1Router.use('/notes', notesRouter);

@@ -1,14 +1,8 @@
 import { Router } from 'express';
 
-import { config } from '$/config';
 import { authController } from '$/controllers';
-import { rateLimit } from '$/middlewares';
 
 const authRouter = Router();
-
-if (config.env === 'production') {
-  authRouter.use(rateLimit);
-}
 
 authRouter.post('/signup', authController.signup);
 authRouter.post('/login', authController.login);
