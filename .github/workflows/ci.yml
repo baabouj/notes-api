@@ -28,13 +28,16 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Synchronize Prisma schema with the database schema
+        run: pnpm prisma db push
+
       - name: Run Linters
         run: pnpm check
 
       - name: Type Check
         run: pnpm type-check
 
-      - name: Test  
+      - name: Test
         run: |
           pnpm prisma db push
           pnpm test
