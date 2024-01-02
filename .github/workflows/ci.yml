@@ -34,8 +34,10 @@ jobs:
       - name: Type Check
         run: pnpm type-check
 
-      - name: Test
-        run: pnpm test
+      - name: Test  
+        run: |
+          pnpm prisma db push
+          pnpm test
         env:
           DATABASE_URL: file:./test.db
           JWT_SECRET: thisisaccesstokensecret
