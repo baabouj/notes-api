@@ -28,6 +28,8 @@ app.use(pino);
 app.use(cors());
 app.options('*', cors());
 
+app.set('trust proxy', 1);
+
 app.use(passport.initialize());
 passport.use('jwt', jwtStrategy);
 
