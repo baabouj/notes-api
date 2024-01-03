@@ -21,4 +21,10 @@ v1Router.use('/categories', categoriesRouter);
 v1Router.use('/tags', tagsRouter);
 v1Router.use('/docs', docsRouter);
 
+v1Router.get('/health', (req, res) =>
+  res.send({
+    message: 'Ok',
+  }),
+);
+
 export { v1Router };
