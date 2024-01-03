@@ -19,7 +19,10 @@ v1Router.use('/auth', authRouter);
 v1Router.use('/notes', notesRouter);
 v1Router.use('/categories', categoriesRouter);
 v1Router.use('/tags', tagsRouter);
-v1Router.use('/docs', docsRouter);
+
+if (config.env === 'development') {
+  v1Router.use('/docs', docsRouter);
+}
 
 v1Router.get('/health', (req, res) =>
   res.send({
