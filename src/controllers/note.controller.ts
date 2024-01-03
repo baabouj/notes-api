@@ -21,7 +21,7 @@ const findAll = handleAsync(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     schema: getNotesSchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -34,7 +34,7 @@ const findOne = handleAsync(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     schema: getNoteSchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -45,7 +45,7 @@ const create = handleAsync(
   },
   {
     schema: createNoteSchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -60,7 +60,7 @@ const update = handleAsync(
   },
   {
     schema: updateNoteSchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -71,7 +71,7 @@ const destroy = handleAsync(
   },
   {
     schema: destroyNoteSchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -86,7 +86,7 @@ const findNoteCategory = handleAsync(
   },
   {
     schema: findNoteCategorySchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -97,7 +97,7 @@ const findNoteTags = handleAsync(
   },
   {
     schema: findNoteTagsSchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
