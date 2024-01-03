@@ -66,13 +66,27 @@ describe('Categories routes', () => {
       await pactum
         .spec()
         .get('/v1/categories')
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
         .get('/v1/categories')
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      await pactum
+        .spec()
+        .get('/v1/categories')
+        .withBearerToken(newAccessToken)
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 
@@ -99,14 +113,31 @@ describe('Categories routes', () => {
     test('should return 401 error if token is invalid or missing', async () => {
       await pactum
         .spec()
-        .get('/v1/categories')
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .post('/v1/categories')
+        .withBearerToken('invalidtoken')
+        .withBody({ name: 'work' })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
-        .get('/v1/categories')
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .post('/v1/categories')
+        .withBearerToken('')
+        .withBody({ name: 'work' })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      await pactum
+        .spec()
+        .post('/v1/categories')
+        .withBearerToken(newAccessToken)
+        .withBody({ name: 'work' })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 
@@ -161,14 +192,31 @@ describe('Categories routes', () => {
         .spec()
         .get('/v1/categories/{categoryId}')
         .withPathParams('categoryId', category.id)
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
         .get('/v1/categories/{categoryId}')
         .withPathParams('categoryId', category.id)
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      const category = generateCategory(newUser.id);
+
+      await pactum
+        .spec()
+        .get('/v1/categories/{categoryId}')
+        .withPathParams('categoryId', category.id)
+        .withBearerToken(newAccessToken)
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 
@@ -191,7 +239,7 @@ describe('Categories routes', () => {
           name,
         });
     });
-    test('should return 400 if tag name already exist', async () => {
+    test('should return 400 if category name already exist', async () => {
       const [category, otherCategory] = await insertCategories([
         generateCategory(user.id),
         generateCategory(user.id),
@@ -249,14 +297,34 @@ describe('Categories routes', () => {
         .spec()
         .patch('/v1/categories/{categoryId}')
         .withPathParams('categoryId', category.id)
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .withBody({ name: 'work' })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
         .patch('/v1/categories/{categoryId}')
         .withPathParams('categoryId', category.id)
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('')
+        .withBody({ name: 'work' })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      const category = generateCategory(newUser.id);
+
+      await pactum
+        .spec()
+        .patch('/v1/categories/{categoryId}')
+        .withPathParams('categoryId', category.id)
+        .withBearerToken(newAccessToken)
+        .withBody({ name: 'work' })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 
@@ -320,14 +388,31 @@ describe('Categories routes', () => {
         .spec()
         .delete('/v1/categories/{categoryId}')
         .withPathParams('categoryId', category.id)
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
         .delete('/v1/categories/{categoryId}')
         .withPathParams('categoryId', category.id)
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      const category = generateCategory(newUser.id);
+
+      await pactum
+        .spec()
+        .delete('/v1/categories/{categoryId}')
+        .withPathParams('categoryId', category.id)
+        .withBearerToken(newAccessToken)
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 
@@ -431,14 +516,31 @@ describe('Categories routes', () => {
         .spec()
         .get('/v1/categories/{categoryId}/notes')
         .withPathParams('categoryId', category.id)
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
         .get('/v1/categories/{categoryId}/notes')
         .withPathParams('categoryId', category.id)
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      const category = generateCategory(newUser.id);
+
+      await pactum
+        .spec()
+        .get('/v1/categories/{categoryId}/notes')
+        .withPathParams('categoryId', category.id)
+        .withBearerToken(newAccessToken)
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 });

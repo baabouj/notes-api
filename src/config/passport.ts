@@ -24,7 +24,7 @@ const jwtVerify = async (payload: any, done: any) => {
   if (!user) {
     return done(null, false);
   }
-  return done(null, user.id);
+  return done(null, user);
 };
 
 const jwtStrategy = new JwtStrategy(jwtOptions, jwtVerify);

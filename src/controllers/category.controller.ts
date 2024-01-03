@@ -23,7 +23,7 @@ const findAll = handleAsync(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     schema: getCategoriesSchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -37,7 +37,7 @@ const findOne = handleAsync(
   },
   {
     schema: getCategorySchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -51,7 +51,7 @@ const create = handleAsync(
   },
   {
     schema: createCategorySchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -66,7 +66,7 @@ const update = handleAsync(
   },
   {
     schema: updateCategorySchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -77,7 +77,7 @@ const destroy = handleAsync(
   },
   {
     schema: destroyCategorySchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 
@@ -98,7 +98,7 @@ const findCategoryNotes = handleAsync(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     schema: getCategoryNotesSchema,
-    auth: true,
+    auth: 'verified',
   },
 );
 

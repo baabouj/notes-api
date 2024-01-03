@@ -60,13 +60,27 @@ describe('Tags routes', () => {
       await pactum
         .spec()
         .get('/v1/tags')
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
         .get('/v1/tags')
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      await pactum
+        .spec()
+        .get('/v1/tags')
+        .withBearerToken(newAccessToken)
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 
@@ -93,14 +107,31 @@ describe('Tags routes', () => {
     test('should return 401 error if token is invalid or missing', async () => {
       await pactum
         .spec()
-        .get('/v1/tags')
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .post('/v1/tags')
+        .withBearerToken('invalidtoken')
+        .withBody({ name: 'javascript' })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
-        .get('/v1/tags')
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .post('/v1/tags')
+        .withBearerToken('')
+        .withBody({ name: 'javascript' })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      await pactum
+        .spec()
+        .post('/v1/tags')
+        .withBearerToken(newAccessToken)
+        .withBody({ name: 'javascript' })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 
@@ -153,14 +184,31 @@ describe('Tags routes', () => {
         .spec()
         .get('/v1/tags/{tagId}')
         .withPathParams('tagId', tag.id)
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
         .get('/v1/tags/{tagId}')
         .withPathParams('tagId', tag.id)
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      const tag = generateTag(newUser.id);
+
+      await pactum
+        .spec()
+        .get('/v1/tags/{tagId}')
+        .withPathParams('tagId', tag.id)
+        .withBearerToken(newAccessToken)
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 
@@ -238,14 +286,40 @@ describe('Tags routes', () => {
         .spec()
         .patch('/v1/tags/{tagId}')
         .withPathParams('tagId', tag.id)
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .withBody({
+          name: 'javascript',
+        })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
         .patch('/v1/tags/{tagId}')
         .withPathParams('tagId', tag.id)
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('')
+        .withBody({
+          name: 'javascript',
+        })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      const tag = generateTag(newUser.id);
+
+      await pactum
+        .spec()
+        .patch('/v1/tags/{tagId}')
+        .withPathParams('tagId', tag.id)
+        .withBearerToken(newAccessToken)
+        .withBody({
+          name: 'javascript',
+        })
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 
@@ -307,14 +381,31 @@ describe('Tags routes', () => {
         .spec()
         .delete('/v1/tags/{tagId}')
         .withPathParams('tagId', tag.id)
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
         .delete('/v1/tags/{tagId}')
         .withPathParams('tagId', tag.id)
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      const tag = generateTag(newUser.id);
+
+      await pactum
+        .spec()
+        .delete('/v1/tags/{tagId}')
+        .withPathParams('tagId', tag.id)
+        .withBearerToken(newAccessToken)
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 
@@ -411,14 +502,31 @@ describe('Tags routes', () => {
         .spec()
         .get('/v1/tags/{tagId}/notes')
         .withPathParams('tagId', tag.id)
-        .withHeaders('Authorization', 'invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
       await pactum
         .spec()
         .get('/v1/tags/{tagId}/notes')
         .withPathParams('tagId', tag.id)
-        .withHeaders('Authorization', '')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
+    });
+
+    test("should return 401 error if token is valid but user's email address is not verified", async () => {
+      const [newUser] = await insertUsers([generateUser()]);
+      const newAccessToken = tokenService.generateJwt(newUser.id);
+
+      const tag = generateTag(newUser.id);
+
+      await pactum
+        .spec()
+        .get('/v1/tags/{tagId}/notes')
+        .withPathParams('tagId', tag.id)
+        .withBearerToken(newAccessToken)
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Please verify your email address');
     });
   });
 });

@@ -168,7 +168,7 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/logout')
-        .withHeaders('Authorization', 'Bearer $S{access_token}')
+        .withBearerToken('$S{access_token}')
         .expectStatus(httpStatus.NO_CONTENT);
     });
 
@@ -176,13 +176,15 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/logout')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
 
       await pactum
         .spec()
         .post('/v1/auth/logout')
-        .withHeaders('Authorization', 'Bearer invalidtoken')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .withBearerToken('invalidtoken')
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
     });
   });
 
@@ -239,7 +241,7 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .get('/v1/auth/me')
-        .withHeaders('Authorization', `Bearer ${accessToken}`)
+        .withBearerToken(accessToken)
         .expectStatus(httpStatus.OK)
         .expectJsonLike(only(user, ['id', 'name', 'email']))
         .expect((ctx) => {
@@ -251,7 +253,8 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .get('/v1/auth/me')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
     });
   });
 
@@ -265,7 +268,7 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/change-password')
-        .withHeaders('Authorization', `Bearer ${accessToken}`)
+        .withBearerToken(accessToken)
         .withBody({
           oldPassword: user.password,
           newPassword: 'password2',
@@ -282,7 +285,7 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/change-password')
-        .withHeaders('Authorization', `Bearer ${accessToken}`)
+        .withBearerToken(accessToken)
         .withBody({
           oldPassword: 'wrongpassword',
           newPassword: 'password2',
@@ -299,7 +302,8 @@ describe('Auth routes', () => {
           oldPassword: 'wrongpassword',
           newPassword: 'password2',
         })
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
     });
 
     test('should return 400 error if passwords are missing or less than 8 characters', async () => {
@@ -311,7 +315,7 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/change-password')
-        .withHeaders('Authorization', `Bearer ${accessToken}`)
+        .withBearerToken(accessToken)
         .expectStatus(httpStatus.BAD_REQUEST)
         .expectBodyContains('newPassword')
         .expectBodyContains('oldPassword');
@@ -319,7 +323,7 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/change-password')
-        .withHeaders('Authorization', `Bearer ${accessToken}`)
+        .withBearerToken(accessToken)
         .withBody({
           oldPassword: 'passwrd',
           newPassword: 'short',
@@ -521,7 +525,7 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/send-verification-email')
-        .withHeaders('Authorization', `Bearer ${accessToken}`)
+        .withBearerToken(accessToken)
         .expectStatus(httpStatus.OK)
         .expectJson({
           message:
@@ -547,7 +551,7 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/send-verification-email')
-        .withHeaders('Authorization', `Bearer ${accessToken}`)
+        .withBearerToken(accessToken)
         .expectStatus(httpStatus.OK)
         .expectJson({
           message:
@@ -564,7 +568,8 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/send-verification-email')
-        .expectStatus(httpStatus.UNAUTHORIZED);
+        .expectStatus(httpStatus.UNAUTHORIZED)
+        .expectBodyContains('Unauthorized');
     });
   });
 });
