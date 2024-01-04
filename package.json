@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "start": "pm2 start ecosystem.config.json",
+    "start": "pm2-runtime start ecosystem.config.json",
     "build": "tsup",
     "dev": "cross-env NODE_ENV=development tsup --watch --sourcemap --onSuccess \"node dist/index.js\"",
     "test": "vitest run",
