@@ -15,6 +15,17 @@ const paginationSchema = z.object({
       return !Number.isNaN(limit) && limit > 0 && limit <= 100 ? limit : 20;
     })
     .default('20'),
+  sortBy: z
+    .string()
+    .transform((value) => {
+      const [by, order] = value.split(',');
+
+      return {
+        by,
+        order: ['asc', 'desc'].includes(order) ? order : 'asc',
+      };
+    })
+    .optional(),
   search: z.string().optional(),
 });
 

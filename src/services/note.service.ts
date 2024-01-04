@@ -31,7 +31,7 @@ const findOne = async (
 
 const paginate = async (
   userId: string,
-  { page, limit, search, include }: GetNotesQuery,
+  { page, limit, search, include, sortBy }: GetNotesQuery,
   where = {} as Prisma.NoteWhereInput,
 ) => {
   const or = search
@@ -51,6 +51,13 @@ const paginate = async (
       }
     : {};
 
+  const orderBy =
+    sortBy && ['title', 'content', 'createdAt', 'updatedAt'].includes(sortBy.by)
+      ? {
+          [sortBy.by]: sortBy.order,
+        }
+      : undefined;
+
   const [notes, totalNotes] = await prisma.$transaction([
     prisma.note.findMany({
       where: {
@@ -61,6 +68,7 @@ const paginate = async (
       take: limit,
       skip: limit * (page - 1),
       include,
+      orderBy,
     }),
     prisma.note.count({
       where: {
