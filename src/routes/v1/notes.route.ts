@@ -81,6 +81,24 @@ export { notesRouter };
  *             - tags,category
  *             - category,tags
  *         description: include notes tags or categories or both
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - title
+ *             - content
+ *             - createdAt
+ *             - updatedAt
+ *             - title,asc
+ *             - title,desc
+ *             - content,asc
+ *             - content,desc
+ *             - createdAt,asc
+ *             - createdAt,desc
+ *             - updatedAt,asc
+ *             - updatedAt,desc
+ *         description: sort notes by a field and in asc or desc order
  *     responses:
  *       200:
  *         $ref: '#/components/responses/PaginatedNotes'

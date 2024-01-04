@@ -87,6 +87,21 @@ export { categoriesRouter };
  *         schema:
  *           type: string
  *         description: search for categories
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - name
+ *             - createdAt
+ *             - updatedAt
+ *             - name,asc
+ *             - name,desc
+ *             - createdAt,asc
+ *             - createdAt,desc
+ *             - updatedAt,asc
+ *             - updatedAt,desc
+ *         description: sort categories by a field and in asc or desc order
  *     responses:
  *       200:
  *         description: OK
@@ -265,6 +280,24 @@ export { categoriesRouter };
  *           enum:
  *             - tags
  *         description: include notes tags
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - title
+ *             - content
+ *             - createdAt
+ *             - updatedAt
+ *             - title,asc
+ *             - title,desc
+ *             - content,asc
+ *             - content,desc
+ *             - createdAt,asc
+ *             - createdAt,desc
+ *             - updatedAt,asc
+ *             - updatedAt,desc
+ *         description: sort notes by a field and in asc or desc order
  *     responses:
  *       200:
  *         $ref: '#/components/responses/PaginatedNotes'

@@ -26,7 +26,7 @@ const findAll = async (authorId: string) => {
 
 const paginate = async (
   userId: string,
-  { page, limit, search }: Pagination,
+  { page, limit, search, sortBy }: Pagination,
 ) => {
   const where = {
     authorId: userId,
@@ -34,6 +34,13 @@ const paginate = async (
       name: search,
     }),
   };
+
+  const orderBy =
+    sortBy && ['name', 'createdAt', 'updatedAt'].includes(sortBy.by)
+      ? {
+          [sortBy.by]: sortBy.order,
+        }
+      : undefined;
 
   const [categories, totalCategories] = await prisma.$transaction([
     prisma.category.findMany({
@@ -43,6 +50,7 @@ const paginate = async (
       include: {
         _count: true,
       },
+      orderBy,
     }),
     prisma.category.count({
       where,
