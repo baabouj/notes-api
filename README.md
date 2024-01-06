@@ -35,7 +35,7 @@ The Notes API is a versatile application programming interface for managing and 
 - [TypeScript](https://www.typescriptlang.org/): Strongly typed programming language that builds on JavaScript.
 - [Prisma](https://www.prisma.io/): Node.js and TypeScript ORM.
 - [Vitest](https://vitest.dev/): Testing framework.
-- [PactumJS](https://pactumjs.github.io/): REST API Testing Tool
+- [PactumJS](https://pactumjs.github.io/): REST API Testing Tool.
 
 ## Getting Started
 
