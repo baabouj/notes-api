@@ -2,6 +2,7 @@ import cookie from 'cookie';
 import httpStatus from 'http-status';
 import pactum from 'pactum';
 
+import { REFRESH_TOKEN_COOKIE_NAME } from '$/constants';
 import { emailService, tokenService, userService } from '$/services';
 import { hash, only } from '$/utils';
 
@@ -104,9 +105,10 @@ describe('Auth routes', () => {
         email: user.email,
         password: user.password,
       };
+
       pactum.handler.addCaptureHandler('refresh token', (ctx) => {
         return cookie.parse(ctx.res.headers['set-cookie']?.[0] as string)[
-          '__Host-token'
+          `${REFRESH_TOKEN_COOKIE_NAME}`
         ];
       });
 
@@ -120,7 +122,7 @@ describe('Auth routes', () => {
           const cookies = cookie.parse(
             ctx.res.headers['set-cookie']?.[0] as string,
           );
-          expect(cookies).toHaveProperty('__Host-token');
+          expect(cookies).toHaveProperty(REFRESH_TOKEN_COOKIE_NAME);
         })
         .expect((ctx) => {
           const payload = tokenService.verifyJwt(ctx.res.body.access_token);
@@ -193,12 +195,12 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/refresh')
-        .withCookies('__Host-token', '$S{refresh_token}')
+        .withCookies(REFRESH_TOKEN_COOKIE_NAME, '$S{refresh_token}')
         .expectStatus(httpStatus.OK)
         .expectBodyContains('access_token')
         .expect((ctx) => {
           const refreshTokenCookie = ctx.res.headers['set-cookie']?.[1];
-          expect(refreshTokenCookie).toContain('__Host-token');
+          expect(refreshTokenCookie).toContain(REFRESH_TOKEN_COOKIE_NAME);
           expect(refreshTokenCookie).toContain('HttpOnly');
           expect(refreshTokenCookie).toContain('Secure');
         });
@@ -208,7 +210,7 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/refresh')
-        .withCookies('__Host-token', '$S{refresh_token}')
+        .withCookies(REFRESH_TOKEN_COOKIE_NAME, '$S{refresh_token}')
         .expectStatus(httpStatus.BAD_REQUEST);
     });
 
@@ -227,7 +229,7 @@ describe('Auth routes', () => {
       await pactum
         .spec()
         .post('/v1/auth/refresh')
-        .withCookies('__Host-token', refreshToken)
+        .withCookies(REFRESH_TOKEN_COOKIE_NAME, refreshToken)
         .expectStatus(httpStatus.BAD_REQUEST);
     });
   });

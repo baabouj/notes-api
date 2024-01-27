@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import ms from 'ms';
 
 import { config } from '$/config';
+import { REFRESH_TOKEN_COOKIE_NAME } from '$/constants';
 import { BadRequestException } from '$/exceptions';
 import { handleAsync } from '$/lib';
 import { authService, tokenService, userService } from '$/services';
@@ -21,7 +22,7 @@ const login = handleAsync(
 
     const user = await authService.login(email, password);
 
-    const cookieToken: string = req.cookies['__Host-token'];
+    const cookieToken: string = req.cookies[`${REFRESH_TOKEN_COOKIE_NAME}`];
 
     if (cookieToken) {
       const foundRefreshToken =
@@ -30,7 +31,7 @@ const login = handleAsync(
       if (foundRefreshToken)
         await tokenService.deleteToken(foundRefreshToken.id);
 
-      res.clearCookie('__Host-token', {
+      res.clearCookie(REFRESH_TOKEN_COOKIE_NAME, {
         secure: true,
         httpOnly: true,
         sameSite: 'lax',
@@ -41,7 +42,7 @@ const login = handleAsync(
       user.id,
     );
 
-    res.cookie('__Host-token', refreshToken, {
+    res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
       secure: true,
       httpOnly: true,
       sameSite: 'lax',
@@ -71,11 +72,11 @@ const signup = handleAsync(
 );
 
 const refresh = handleAsync(async (req, res) => {
-  const cookieToken = req.cookies['__Host-token'];
+  const cookieToken = req.cookies[`${REFRESH_TOKEN_COOKIE_NAME}`];
 
   if (!cookieToken) throw new BadRequestException();
 
-  res.clearCookie('__Host-token', {
+  res.clearCookie(REFRESH_TOKEN_COOKIE_NAME, {
     secure: true,
     httpOnly: true,
     sameSite: 'lax',
@@ -89,7 +90,7 @@ const refresh = handleAsync(async (req, res) => {
   );
   await tokenService.deleteToken(token.id);
 
-  res.cookie('__Host-token', refreshToken, {
+  res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
     secure: true,
     httpOnly: true,
     sameSite: 'lax',
@@ -103,10 +104,10 @@ const refresh = handleAsync(async (req, res) => {
 
 const logout = handleAsync(
   async (req, res) => {
-    const token = req.cookies['__Host-token'];
+    const token = req.cookies[`${REFRESH_TOKEN_COOKIE_NAME}`];
 
     if (token) {
-      res.clearCookie('__Host-token', {
+      res.clearCookie(REFRESH_TOKEN_COOKIE_NAME, {
         secure: true,
         httpOnly: true,
         sameSite: 'lax',
